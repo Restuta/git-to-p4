@@ -7,7 +7,9 @@
 	#switch back the to previous branch
 $Env:P4CHARSET = "utf8"
 
-if ($args[0] -eq "-preview" -or $args[0] -eq "-p") {$preview = $TRUE } 
+if ($args[0] -eq "-preview" -or $args[0] -eq "-p") {
+	$preview = $TRUE }
+ 
 else { 
 	$shortPreview = $FALSE
 	$preview = $FALSE 
@@ -154,14 +156,15 @@ if (-not $preview) {
 
 		#write git commits to a temp file to allow multiline comments, I was unable to get them working in other way
 		$tempFile = [System.IO.Path]::GetTempFileName()
-		[System.IO.File]::WriteAllLines($tempFile, $_.Comments)
+		[System.IO.File]::WriteAllLines($tempFile, ("@" + $_.Id + " ") + $_.Comments)
 
 		#Write-Host "git commit -m `"$($comments)`" --author `"$($_.Author)`" --date `"$($_.Date)`""
 		git commit -F "$tempFile" --author "`"$($_.Author)`"" --date "`"$($_.Date)`"" --allow-empty --allow-empty-message
 		#todo: sync workspace to previous changelist if something failed on git side
 		ExitIfPreviousCommandFailed
+
 		#tag git commit with changelist id
-		git tag ("@" + $_.Id) -f
+		#git tag ("@" + $_.Id) -f
 	}
 }
 
