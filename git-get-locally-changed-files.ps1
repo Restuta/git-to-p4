@@ -1,0 +1,2 @@
+#will list all files with "--assume-unchanged" state (will list all files and then filter them to the ones starting from one of the lowercase latters, which will be a sign that a file is in state --assume-unchanged see: http://ftp.sunet.se/pub/Linux/kernel.org/software/scm/git/docs/git-ls-files.html)
+git ls-files -v  | findstr /R "^[hsmrck?]"
