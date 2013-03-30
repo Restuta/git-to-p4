@@ -133,7 +133,7 @@ $aggregatedOutput | foreach {
 		}
 	
 		$p4Changelist = New-Object PsObject |            
-		    Add-Member NoteProperty Id $matches["changelistId"] -PassThru |             
+		    Add-Member NoteProperty Id ($matches["changelistId"] -As [int]) -PassThru |             
 		    Add-Member NoteProperty Date $matches["date"] -PassThru |
 		    Add-Member NoteProperty Comments $matches["comments"] -PassThru |
 		    Add-Member NoteProperty Author ($p4User.WellformedName + " <" + $p4User.Email + ">") -PassThru
