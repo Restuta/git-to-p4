@@ -8,12 +8,16 @@ Function GetLastChangestId() {
     $changesetId = ""
 
     while($changesetId -eq "") {
-        $lastCommitMessage = (git log --pretty=format:'%B' HEAD"~$currentCommit"..HEAD"~$($currentCommit - 1)")[0] #getting first line, since the result is array of lines        
-        
-        if ($lastCommitMessage -Match "@(?<changesetId>\d+)") {
-            $changesetId = $matches["changesetId"]
+        $commitMessageLines = git log --pretty=format:'%B' HEAD"~$currentCommit"..HEAD"~$($currentCommit - 1)" 
+        $commitMessageLines | foreach {
+            
+            if ($_ -Match "@(?<changesetId>\d+)") {
+                $changesetId = $matches["changesetId"]
+            }
+            if (-not $changesetId -eq "") {
+                break
+            }
         }
-
         $currentCommit++
     }
 
@@ -27,4 +31,4 @@ Write-Host $changesetId -ForegroundColor Yellow
 
 Write-Host "Running: " -NoNewLine -ForegroundColor DarkYellow
 Write-Host "p4 sync -q -f $(`"$currentDir...`" + "@" + $changesetId)" -ForegroundColor White
-p4 sync -q ("$currentDir..." + "@" + $changesetId)
+p4 sync -q -f ("$currentDir..." + "@" + $changesetId)
